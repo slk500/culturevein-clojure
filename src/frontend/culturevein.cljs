@@ -32,11 +32,12 @@
              :on-change #(reset! value (-> % .-target .-value))}])
 
 (defn list-tags [items]
-  [:ul
-   (for [item items 
-         :when (str/includes? (get-in item ["name_lowercase"]) @value)
-         ]
-      [:li {:key (get-in item ["tag_slug_id"])} (get-in item ["tag_name"])])])
+  (let [results (for [item items
+                      :when (str/includes? (get-in item ["name_lowercase"]) @value)] item)]
+    [:div
+     [:p "counter: " (count results)]
+     [:ul (doall (for [result results]
+                   [:li {:key (get-in result ["tag_slug_id"])} (get-in result ["tag_name"])]))]]))
 
 (defn app []
   [:div.app
