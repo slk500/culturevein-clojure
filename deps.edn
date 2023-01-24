@@ -1,5 +1,6 @@
 {:deps {org.clojure/clojure {:mvn/version "1.10.0"}
         org.clojure/clojurescript {:mvn/version "1.11.4"}
+        cider/piggieback {:mvn/version "0.4.2"}
         cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
         reagent/reagent {:mvn/version "1.0.0"}}
  :paths ["src" "resources"]
@@ -8,6 +9,7 @@
                   org.slf4j/slf4j-nop {:mvn/version "1.7.30"}
                   com.bhauman/figwheel-main {:mvn/version "0.2.17"}}
                  :extra-paths ["target" "test"]}
+           :cider-cljs {:main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware,cider.piggieback/wrap-cljs-repl]"]}
            :build {:main-opts ["-m" "figwheel.main" "-b" "dev" "-r"]}
            :min   {:main-opts ["-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]}
            :test  {:main-opts ["-m" "figwheel.main" "-co" "test.cljs.edn" "-m" "frontend.test-runner"]}}}

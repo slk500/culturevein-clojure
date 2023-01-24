@@ -31,13 +31,20 @@
              :value @value
              :on-change #(reset! value (-> % .-target .-value))}])
 
+(defn highlight [string search] 
+  (clojure.string/replace string 
+                          (js/RegExp. (str "("search")") "iu") "<span class='highlight'>$1</span>")
+  )
+
 (defn list-tags [items]
   (let [results (for [item items
-                      :when (str/includes? (get-in item ["name_lowercase"]) @value)] item)]
+                      :when (str/includes? (get-in item ["tag_name_lowercase"]) @value)] item)]
     [:div
      [:p "counter: " (count results)]
      [:ul (doall (for [result results]
-                   [:li {:key (get-in result ["tag_slug_id"])} (get-in result ["tag_name"])]))]]))
+                   [:li 
+{:dangerouslySetInnerHTML {:__html (highlight (get-in result ["tag_name"]) @value)}}
+]))]]))
 
 (defn app []
   [:div.app
