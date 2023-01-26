@@ -2,6 +2,7 @@
         org.clojure/clojurescript {:mvn/version "1.11.4"}
         cider/piggieback {:mvn/version "0.4.2"}
         cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
+        hiccups/hiccups {:mvn/version "0.3.0"}
         reagent/reagent {:mvn/version "1.0.0"}}
  :paths ["src" "resources"]
  :aliases {:fig {:extra-deps
