@@ -6,7 +6,7 @@
   [reagent.dom :as rdom]
   [ajax.core :as ajax]
   [hiccups.runtime]
-  (clojure.string :as str)))
+  [clojure.string :as str]))
 
 (def value (r/atom ""))
 (defonce app-state (atom {:title "CultureVein"
@@ -24,58 +24,44 @@
 (defn title []
   [:h1 (:title @app-state)])
  
-(defn shared-state []
-  [:div
-   [:p "the value is now: " @value]])
-
 (defn main-search []
-  [:input {:type "text"
-             :value @value
-             :on-change #(reset! value (-> % .-target .-value))}])
+  [:div
+   [:input {:type "text"
+            :value @value
+            :on-change #(reset! value (-> % .-target .-value))}]
+   [:p "the value is now: " @value]]
+)
 
-(defn highlight [string search] 
-  (clojure.string/replace string 
-                          (js/RegExp. (str "("search")") "iu") "<span class='highlight'>$1</span>"))
+(defn includes-in-tags-tree? [tags substr]
+  (->> (tree-seq associative? identity tags)
+       (some #(and (map-entry? %)
+                   (let [[k v] %]
+                     (and (= k :tag_name_lowercase)
+                          (str/includes? v substr)))))))
 
-;; (defn list-tag [tags]
-;;   [:ul (doall (for [tag tags]
-;;                 [:li 
-;;                  {:dangerouslySetInnerHTML {:__html (highlight (:tag_name tag) @value)}}]                
-;;                 ))]
-;; )
-
-(defn map-to-html-list [mapa]
+(defn tags-to-html-list [tags]
   (hiccups/html
    [:ul
-    (for [tag mapa]
+    (for [tag tags]  
       [:li 
        (str (:tag_name tag) 
             (if (seq (:children tag))
-              (map-to-html-list (:children tag))))
+              (tags-to-html-list (:children tag))))
        ])
     ]))
 
-(defn list-tag [tags]
-  [:ul (for [tag tags]
-                [:li (:tag_name tag)])]
-  )
-
 (defn list-tags [items]
   (let [results (for [item items
-                      :when (str/includes? (:tag_name_lowercase item) @value)] item)]
-    [:div
-     [:p (count results) " tags"]
-     (list-tag results)
-]))
+                      :when (includes-in-tags-tree? item @value)] item)]
+    [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list results)}}]
+  ))
 
 (defn app []
   [:div.app
    [title]
-   [:div {:dangerouslySetInnerHTML {:__html (map-to-html-list (:tags @app-state))}}]
    [main-search]
-   [shared-state]
    [list-tags (:tags @app-state)]
-]
+ ]
   )
 
 (defn mount-app-element []                                 
