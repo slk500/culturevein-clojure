@@ -1,4 +1,29 @@
-/* some style */
 .highlight {
     background-color:  yellow;
  }
+
+.list-unstyled {
+    list-style-type: none;
+}
+
+.list-break-to-columns {
+  -webkit-column-count: 1;
+  -moz-column-count: 1;
+  column-count: 1;
+}
+
+@media only screen and (min-width: 400px) {
+  .list-break-to-columns  {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  .list-break-to-columns  {
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+  }
+}
