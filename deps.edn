@@ -3,7 +3,9 @@
         cider/piggieback {:mvn/version "0.4.2"}
         cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
         hiccups/hiccups {:mvn/version "0.3.0"}
-        reagent/reagent {:mvn/version "1.0.0"}}
+        reagent/reagent {:mvn/version "1.0.0"}
+        venantius/accountant {:mvn/version "0.2.5"}
+        clj-commons/secretary {:mvn/version "1.2.5-SNAPSHOT"}}
  :paths ["src" "resources"]
  :aliases {:fig {:extra-deps
                  {com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}
