@@ -2,13 +2,14 @@
   (:require-macros [hiccups.core :as hiccups])
   (:require
    [goog.dom :as gdom]
-   [reagent.core :as r :refer [atom]]
+   [reagent.core :as r :refer [atom cursor]]
    [reagent.dom :as rdom]
    [ajax.core :as ajax]
    [hiccups.runtime]
    [secretary.core :as secretary :refer-macros [defroute]]
    [accountant.core :as accountant]
    [frontend.tags :as tags]
+   [frontend.layout :as layout]
    [clojure.string :as str]))
 
 (declare music-video-list)
@@ -17,21 +18,20 @@
 (declare mount-element)
 
 (defroute "/tags" {}
-  (mount-element tag-list))
+  (mount-element tag-list "app"))
 
 (defroute "/music-videos" {}
-  (mount-element music-video-list))
+  (mount-element music-video-list "app"))
 
 (defroute "/music-videos/:id" {:as params}
-  (mount-element music-video-show))
+  (mount-element music-video-show "app"))
 
 (accountant/configure-navigation!
  {:nav-handler   (fn [path] (secretary/dispatch! path))
   :path-exists?  (fn [path] (secretary/locate-route path))})
 
-(def value (r/atom ""))
-(defonce app-state (atom {:title "CultureVein"
-                          :tags []
+(defonce value (atom ""))
+(defonce app-state (atom {:tags []
                           :music-videos []
                           :current-route [:home]}))
 
@@ -49,22 +49,18 @@
   (ajax/GET "http://localhost:8000/api/videos"
             {:handler handle-response-music-videos}))
 
+(defn get-music-video-show [youtube-id]
+  (ajax/GET "http://localhost:8000/api/music-videos/"
+            {:handler handle-response-music-videos}))
+
 (get-tags)
 (get-music-videos)
-
-(defn main-search []
-  [:div
-   [:input {:type "text"
-            :value @value
-            :on-change #(reset! value (-> % .-target .-value))}]]
-  )
 
 (defn highlight [s search]
   (if (str/blank? search)
     s
     (str/replace s 
                  (js/RegExp. (str "("search")") "iu") "<span class='highlight'>$1</span>")))
-
 
 (defn includes-in-tags-tree? [tags substr]
   (->> (tree-seq associative? identity tags)
@@ -79,7 +75,7 @@
      ^{:key (:name artist)} [:li (:name artist)
                              [:ul
                               (for [music-video (:videos artist)]
-                                ^{:key (:youtube_id music-video)} [:li (:name music-video)])]])])
+                                ^{:key (:youtube_id music-video)} [:li [:a {:href (str "music-videos/" (:youtube_id music-video))} (:name music-video)]])]])])
 
 (defn tags-to-html-list [tags first-ul-css-class]
   (hiccups/html
@@ -97,33 +93,26 @@
                       :when (includes-in-tags-tree? item @value)] item)]
     [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list results "list-unstyled list-break-to-columns")}}]))
 
-(defn navbar []
-  [:div
-   [:h1 (:title @app-state)]
-   [:ul {:class "list-unstyled"}
-    [:li [:a {:href "/tags"} "tags"]]
-    [:li [:a {:href "/music-videos"} "music videos"]]
-    [:li {:href "#"} "add music video"]]
-   [main-search]])
+(defn music-video-show [youtube-id]
+  [:div])
 
 (defn music-video-list []
-  [:div.app
-   [navbar]
+  [:div
    [music-videos-to-html-list (:music-videos @app-state)]])
 
-(defn tag-list []
-  [:div.app
-   [navbar]
+(defn tag-list [name]
+  [:div
    [list-tags (:tags @app-state)]])
 
-(defn tag-show []
-  [:div.app
-   [navbar]])
+(defn mount-element [f id]                                 
+  (rdom/render [f] (gdom/getElement id)))
 
-(defn mount-element [f]                                 
-  (rdom/render [f] (gdom/getElement "app")))
+(defn app-components []
+  (do
+    (mount-element #(layout/navbar value) "navbar")
+    (mount-element tag-list "app")))
 
-(mount-element tag-list)
+(app-components)
 
 (defn ^:after-load on-reload []
-  (mount-element tag-list))
+  (app-components))
