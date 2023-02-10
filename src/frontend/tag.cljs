@@ -1,4 +1,4 @@
-(ns frontend.tags)
+(ns frontend.tag)
 
 (defn show-tag []
   [:div
