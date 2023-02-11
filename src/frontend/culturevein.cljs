@@ -61,17 +61,17 @@
               (when (seq children-tag)
                 (tags-to-html-list children-tag ""))))])]))
 
-(defn tag-list [tags]
-  (let [results (for [tag tags
-                      :when (includes-in-tags-tree? tag @value)] tag)]
-    [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list results "list-unstyled list-break-to-columns")}}]))
+(defn tag-list [tags search]
+  (let [tags-filtred (for [tag tags
+                           :when (includes-in-tags-tree? tag @search)] tag)]
+    [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list tags-filtred "list-unstyled list-break-to-columns")}}]))
 
 (defn mount-element [f id]
   (rdom/render [f] (gdom/getElement id)))
 
 (defn app-components []
   (mount-element #(layout/navbar value) "navbar")
-  (mount-element #(tag-list (:tags @app-state)) "app"))
+  (mount-element #(tag-list (:tags @app-state) value) "app"))
 
 (app-components)
 
