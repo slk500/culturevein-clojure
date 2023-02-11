@@ -13,25 +13,17 @@
    [frontend.layout :as layout]
    [clojure.string :as str]))
 
-(declare music-video-list)
-(declare music-video-show)
-(declare tag-list)
 (declare mount-element)
 
 (defonce value (atom ""))
 (defonce app-state (atom {:tags []
                           :music-videos []}))
-(defonce music-videos (cursor app-state [:music-videos]))
 
-(defroute "/tags" {}
-  (mount-element tag-list "app"))
+;; (defroute "/tags" {}
+;;   (mount-element tag-list "app"))
 
 (defroute "/music-videos" {}
-  (mount-element #(music-video-list (:music-videos @app-state)) "app"))
-
-(defn music-video-list [music-videos]
-  [:div
-   [music-video/list music-videos]])
+  (mount-element #(music-video/list (:music-videos @app-state)) "app"))
 
 ;; todo
 ;; (defroute "/music-videos/:id" {:as params}
@@ -47,14 +39,15 @@
 (defn highlight [s search]
   (if (str/blank? search)
     s
-    (str/replace s 
-                 (js/RegExp. (str "("search")") "iu") "<span class='highlight'>$1</span>")))
+    (str/replace s
+                 (js/RegExp. (str "(" search ")") "iu")
+                 "<span class='highlight'>$1</span>")))
 
 (defn includes-in-tags-tree? [tags substr]
   (->> (tree-seq associative? identity tags)
-       (some #(if (map-entry? %)
+       (some #(when (map-entry? %)
                 (let [[k v] %]
-                  (if (= k :tag_name_lowercase)
+                  (when (= k :tag_name_lowercase)
                     (str/includes? v substr)))))))
 
 (defn tags-to-html-list [tags first-ul-css-class]
@@ -65,25 +58,20 @@
        (let [tag-name (:tag_name tag)
              children-tag (:children tag)]
          (str (highlight tag-name @value)
-              (if (seq children-tag)
+              (when (seq children-tag)
                 (tags-to-html-list children-tag ""))))])]))
 
-(defn list-tags [items]
-  (let [results (for [item items
-                      :when (includes-in-tags-tree? item @value)] item)]
+(defn tag-list [tags]
+  (let [results (for [tag tags
+                      :when (includes-in-tags-tree? tag @value)] tag)]
     [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list results "list-unstyled list-break-to-columns")}}]))
 
-(defn tag-list []
-  [:div
-   [list-tags (:tags @app-state)]])
-
-(defn mount-element [f id]                                 
+(defn mount-element [f id]
   (rdom/render [f] (gdom/getElement id)))
 
 (defn app-components []
-  (do
-    (mount-element #(layout/navbar value) "navbar")
-    (mount-element tag-list "app")))
+  (mount-element #(layout/navbar value) "navbar")
+  (mount-element #(tag-list (:tags @app-state)) "app"))
 
 (app-components)
 

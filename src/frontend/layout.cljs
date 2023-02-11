@@ -2,7 +2,7 @@
 
 (defn navbar [value]
   [:div
-   [:h1 "CultureVein"]
+   [:h1 [:a {:href "/"} "CultureVein"]]
    [:ul {:class "list-unstyled"}
     [:li [:a {:href "/tags"} "tags"]]
     [:li [:a {:href "/music-videos"} "music videos"]]

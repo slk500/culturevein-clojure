@@ -1,5 +1,7 @@
-(ns frontend.tag)
+(ns frontend.tag
+  (:require-macros [hiccups.core :as hiccups])
+  (:require
+   [clojure.string :as str]))
 
-(defn show-tag []
-  [:div
-   [:h1 "tag page"]])
+
+
