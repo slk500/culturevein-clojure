@@ -17,15 +17,14 @@
 (defonce app-state (atom {:tags []
                           :music-videos []}))
 
-;; (defroute "/tags" {}
-;;   (mount-element tag-list "app"))
+(defroute "/tags" {}
+  (mount-element #(tag/tag-list (:tags @app-state) value) "app"))
 
 (defroute "/music-videos" {}
   (mount-element #(music-video/list (:music-videos @app-state)) "app"))
 
-;; todo
-;; (defroute "/music-videos/:id" {:as params}
-;;   (mount-element music-video/show "app"))
+(defroute "/music-videos/:id" [id]
+  (mount-element #(music-video/show id) "app"))
 
 (accountant/configure-navigation!
  {:nav-handler   (fn [path] (secretary/dispatch! path))
@@ -39,7 +38,9 @@
 
 (defn app-components []
   (mount-element #(layout/navbar value) "navbar")
-  (mount-element #(tag/tag-list (:tags @app-state) value) "app"))
+  (mount-element #(music-video/list (:music-videos @app-state)) "app")
+;;  (mount-element #(tag/tag-list (:tags @app-state) value) "app")
+  )
 
 (app-components)
 
