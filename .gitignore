@@ -16,3 +16,4 @@ resources/public/cljs-out/
 .clj-kondo/.cache
 src/frontend/.clj-kondo/
 src/frontend/.lsp/
+/node_modules

@@ -2,4 +2,8 @@
   :css-dirs ["resources/public/css"]
   :auto-testing true
    }
-{:main frontend.culturevein}
+{:main frontend.culturevein
+ :target :bundle
+ :bundle-cmd {:none ["npx" "webpack" "--mode=development" "--entry" :output-to 
+                     "--output-path" :final-output-dir
+		     "--output-filename" :final-output-filename]}}

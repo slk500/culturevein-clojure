@@ -23,8 +23,8 @@
 (defroute "/music-videos" {}
   (mount-element #(music-video/list (:music-videos @app-state)) "app"))
 
-(defroute "/music-videos/:id" [id]
-  (mount-element #(music-video/show id) "app"))
+(defroute "/music-videos/:youtube-id" [youtube-id]
+  (mount-element #(music-video/show youtube-id) "app"))
 
 (accountant/configure-navigation!
  {:nav-handler   (fn [path] (secretary/dispatch! path))
@@ -39,8 +39,7 @@
 (defn app-components []
   (mount-element #(layout/navbar value) "navbar")
   (mount-element #(music-video/list (:music-videos @app-state)) "app")
-;;  (mount-element #(tag/tag-list (:tags @app-state) value) "app")
-  )
+  (mount-element #(tag/tag-list (:tags @app-state) value) "app"))
 
 (app-components)
 

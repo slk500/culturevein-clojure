@@ -1,8 +1,14 @@
 (ns frontend.music-video
+  (:require
+   [goog.dom :as gdom]
+   [reagent.core]
+   [frontend.culturevein :as main]
+   ["react-youtube$default" :as YouTube])
   (:refer-clojure :exclude [list]))
 
-(defn show [id]
-  [:div (str "Hello " id)])
+(defn show [youtube-id]
+  [:> YouTube
+   {:videoId youtube-id}])
 
 (defn list [artists]
   [:div
@@ -13,5 +19,4 @@
                                (for [music-video (:videos artist)]
                                  ^{:key (:youtube_id music-video)}
                                  [:li [:a {:href (str "/music-videos/" (:youtube_id music-video))} (:name music-video)]])]])]])
-
 

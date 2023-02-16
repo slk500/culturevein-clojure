@@ -1,6 +1,7 @@
 (ns frontend.tag
-  (:require-macros [hiccups.core :as hiccups])
+  (:require-macros [hiccups.core :as hiccups :refer [html]])
   (:require
+   [hiccups.runtime :as hiccupsrt]
    [clojure.string :as str]))
 
 (defn highlight [s search]
@@ -18,7 +19,7 @@
                     (str/includes? v substr)))))))
 
 (defn tags-to-html-list [tags search first-ul-css-class]
-  (hiccups/html
+  (html
    [:ul {:class first-ul-css-class}
     (for [tag tags]
       [:li
