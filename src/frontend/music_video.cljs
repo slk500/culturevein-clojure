@@ -1,14 +1,17 @@
 (ns frontend.music-video
   (:require
-   [goog.dom :as gdom]
    [reagent.core]
-   [frontend.culturevein :as main]
+   [frontend.api :as api]
    ["react-youtube$default" :as YouTube])
   (:refer-clojure :exclude [list]))
 
+(defonce music-video (atom {:youtube-id ""
+                            :tags []}))
+
 (defn show [youtube-id]
-  [:> YouTube
-   {:videoId youtube-id}])
+  [:div
+   [:> YouTube
+    {:videoId youtube-id}]])
 
 (defn list [artists]
   [:div
