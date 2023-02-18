@@ -14,8 +14,8 @@
      :response-format :json
      :keywords? true}))
 
-(defn get-music-video-tag-list [youtube-id]
+(defn get-music-video-tag-list [music-video-state youtube-id]
   (ajax/GET (str "http://localhost:8000/api/videos/" youtube-id "/tags")
-    {:handler #(.log js/console %)
+    {:handler #(swap! music-video-state assoc :tags (:data %))
      :response-format :json
      :keywords? true}))
