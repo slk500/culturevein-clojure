@@ -24,28 +24,27 @@
       (api/get-music-video music-video-state youtube-id))
     :reagent-render
     (fn []
-      [:div
-       [:> YouTube
-        {:videoId youtube-id}]
-       [:a {:href (str "/artists/" (-> @music-video-state :video :artist_slug))} (-> @music-video-state :video :artist_name)]
-       [:span " - " (-> @music-video-state :video :video_name)]
-       [:ul {:class "list-unstyled"}
-        (for [tag (:tags @music-video-state)]
-          ^{:key (:video_tag_id tag)}
-          [:li (:tag_name tag)
-           (when-let [tags-time (:video_tags_time tag)]
-             [:ol
-              (for [tag-time tags-time]
-                ^{:key (:video_tag_time_id tag-time)}
-                [:li (str (seconds-to-time-string (:start tag-time)) " -" (seconds-to-time-string (:end tag-time)))])])])]])}))
+      (let [{:keys [video_name artist_slug artist_name]} (:video @music-video-state)]
+        [:div
+         [:a {:href (str "/artists/" artist_slug)} artist_name]
+         [:span " - " video_name]
+         [:ul.list-unstyled
+          (for [{:keys [video_tag_id tag_name video_tags_time]} (:tags @music-video-state)]
+            ^{:key video_tag_id}
+            [:li tag_name
+             (when video_tags_time
+               [:ol
+                (for [{:keys [video_tag_time_id start end]} video_tags_time]
+                  ^{:key video_tag_time_id}
+                  [:li (str (seconds-to-time-string start) " -" (seconds-to-time-string end))])])])]]))}))
 
 (defn list [artists]
   [:div
-   [:ul {:class "list-unstyled list-break-to-columns"}
-    (for [artist artists]
-      ^{:key (:name artist)} [:li (:name artist)
-                              [:ul
-                               (for [music-video (:videos artist)]
-                                 ^{:key (:youtube_id music-video)}
-                                 [:li [:a {:href (str "/music-videos/" (:youtube_id music-video))} (:name music-video)]])]])]])
+   [:ul.list-unstyled.list-break-to-columns
+    (for [{:keys [name videos]} artists]
+      ^{:key name} [:li name
+                    [:ul
+                     (for [{:keys [youtube_id name]} videos]
+                       ^{:key youtube_id}
+                       [:li [:a {:href (str "/music-videos/" youtube_id)} name]])]])]])
 
