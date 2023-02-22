@@ -2,18 +2,17 @@
   (:require
    [reagent.core :as r :refer [atom]]
    [frontend.api :as api]
-   [goog.string :refer [format]]
-   ["react-youtube$default" :as YouTube])
+   [frontend.formatter :as f])
   (:refer-clojure :exclude [list]))
 
 (defonce music-video-state (atom {:youtube-id ""
                                   :tags []
                                   :video {}}))
 
-(defn seconds-to-time-string [seconds]
-  (let [minutes (quot seconds 60)
-        seconds (mod seconds 60)]
-    (str (format "%2d" minutes) ":" (format "%02d" seconds))))
+(defn create-youtube-player [youtube-id]
+  (js/YT.Player. "player" #js {:height "390"
+                               :width "640"
+                               :videoId youtube-id}))
 
 (defn show [youtube-id]
   (r/create-class
@@ -21,11 +20,13 @@
     (fn []
       (swap! music-video-state assoc :youtube-id youtube-id)
       (api/get-music-video-tag-list music-video-state youtube-id)
-      (api/get-music-video music-video-state youtube-id))
+      (api/get-music-video music-video-state youtube-id)
+      (create-youtube-player youtube-id))
     :reagent-render
     (fn []
       (let [{:keys [video_name artist_slug artist_name]} (:video @music-video-state)]
         [:div
+         [:div#player]
          [:a {:href (str "/artists/" artist_slug)} artist_name]
          [:span " - " video_name]
          [:ul.list-unstyled
@@ -36,7 +37,7 @@
                [:ol
                 (for [{:keys [video_tag_time_id start end]} video_tags_time]
                   ^{:key video_tag_time_id}
-                  [:li (str (seconds-to-time-string start) " -" (seconds-to-time-string end))])])])]]))}))
+                  [:li (str (f/seconds-to-time-string start) " -" (f/seconds-to-time-string end))])])])]]))}))
 
 (defn list [artists]
   [:div
@@ -47,4 +48,3 @@
                      (for [{:keys [youtube_id name]} videos]
                        ^{:key youtube_id}
                        [:li [:a {:href (str "/music-videos/" youtube_id)} name]])]])]])
-
