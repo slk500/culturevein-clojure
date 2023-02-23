@@ -1,8 +1,12 @@
 (ns frontend.tag
   (:require-macros [hiccups.core :as hiccups :refer [html]])
   (:require
-   [hiccups.runtime :as hiccupsrt]
-   [clojure.string :as str]))
+   [reagent.core :as r :refer [atom]]
+   [frontend.api :as api]
+   [clojure.string :as str])
+  (:refer-clojure :exclude [list]))
+
+(defonce tag-state (atom nil))
 
 (defn highlight [s search]
   (if (str/blank? search)
@@ -25,13 +29,22 @@
       [:li
        (let [tag-name (:tag_name tag)
              children-tag (:children tag)]
-         (str (highlight tag-name @search)
-              (when (seq children-tag)
-                (tags-to-html-list children-tag search ""))))])]))
+         [:a {:href (str "/tags/" (:tag_slug_id tag))}
+          (str (highlight tag-name @search)
+               (when (seq children-tag)
+                 (tags-to-html-list children-tag search "")))])])]))
 
-(defn tag-list [tags search]
+(defn list [tags search]
   (let [tags-filtred (for [tag tags
                            :when (includes-in-tags-tree? tag @search)] tag)]
     [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list tags-filtred search "list-unstyled list-break-to-columns")}}]))
 
-
+(defn show [tag-slug]
+  (r/create-class
+   {:component-did-mount
+    (fn [] (api/get-tag-show tag-state tag-slug))
+    :reagent-render
+    (let [{:keys [name]} @tag-state]
+     (fn []
+       [:div
+        [:div.tag-name name]]))}))
