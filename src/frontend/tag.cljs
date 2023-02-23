@@ -40,11 +40,7 @@
     [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list tags-filtred search "list-unstyled list-break-to-columns")}}]))
 
 (defn show [tag-slug]
-  (r/create-class
-   {:component-did-mount
-    (fn [] (api/get-tag-show tag-state tag-slug))
-    :reagent-render
-    (let [{:keys [name]} @tag-state]
-     (fn []
-       [:div
-        [:div.tag-name name]]))}))
+  (api/get-tag-show tag-state tag-slug)
+  (fn []
+    [:div
+     [:div.tag-name (:name @tag-state)]]))
