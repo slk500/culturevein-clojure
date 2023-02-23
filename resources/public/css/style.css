@@ -12,6 +12,10 @@
   column-count: 1;
 }
 
+.navbar {
+    padding-bottom: 50px;
+}
+
 @media only screen and (min-width: 400px) {
   .list-break-to-columns  {
     -webkit-column-count: 2;

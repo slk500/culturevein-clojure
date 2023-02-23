@@ -8,11 +8,13 @@
 (defonce music-video-state (atom {:youtube-id ""
                                   :tags []
                                   :video {}}))
+(defonce player (atom nil))
 
 (defn create-youtube-player [youtube-id]
-  (js/YT.Player. "player" #js {:height "390"
-                               :width "640"
-                               :videoId youtube-id}))
+  (set! player
+        (js/YT.Player. "player" #js {:height "390"
+                                     :width "640"
+                                     :videoId youtube-id})))
 
 (defn show [youtube-id]
   (r/create-class
@@ -27,17 +29,18 @@
       (let [{:keys [video_name artist_slug artist_name]} (:video @music-video-state)]
         [:div
          [:div#player]
-         [:a {:href (str "/artists/" artist_slug)} artist_name]
-         [:span " - " video_name]
+         [:p [:a {:href (str "/artists/" artist_slug)} artist_name]
+          [:span " - " video_name]]
          [:ul.list-unstyled
           (for [{:keys [video_tag_id tag_name video_tags_time]} (:tags @music-video-state)]
             ^{:key video_tag_id}
             [:li tag_name
              (when video_tags_time
                [:ol
-                (for [{:keys [video_tag_time_id start end]} video_tags_time]
+                (for [{:keys [video_tag_time_id start stop]} video_tags_time]
                   ^{:key video_tag_time_id}
-                  [:li (str (f/seconds-to-time-string start) " -" (f/seconds-to-time-string end))])])])]]))}))
+                  [:li [:a {:on-click #(.seekTo player start true)
+                            :href "#"} (str (f/seconds-to-time-string start) " -"  (f/seconds-to-time-string stop))]])])])]]))}))
 
 (defn list [artists]
   [:div
