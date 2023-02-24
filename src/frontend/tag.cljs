@@ -3,6 +3,7 @@
   (:require
    [reagent.core :as r :refer [atom]]
    [frontend.api :as api]
+   [frontend.formatter :as f]
    [clojure.string :as str])
   (:refer-clojure :exclude [list]))
 
@@ -37,10 +38,30 @@
 (defn list [tags search]
   (let [tags-filtred (for [tag tags
                            :when (includes-in-tags-tree? tag @search)] tag)]
-    [:div {:dangerouslySetInnerHTML {:__html (tags-to-html-list tags-filtred search "list-unstyled list-break-to-columns")}}]))
+    [:div {:dangerouslySetInnerHTML
+           {:__html (tags-to-html-list tags-filtred search "list-unstyled list-break-to-columns")}}]))
+
+(defn- tags-show-table [music-videos]
+  [:table
+   [:thead
+    [:tr
+     [:th "no."]
+     [:th "artist - title"]
+     [:th "children tags"]
+     [:th "tag duration time"]]]
+   [:tbody
+    (map-indexed (fn [i music-video]
+                   ^{:key i}
+                   [:tr
+                    [:td (inc i)]
+                    [:td (:name music-video)]
+                    [:td (str/join ", " (sort (map (fn [child-tag] (:name child-tag)) (:tags (first (:tags music-video))))))]
+                    [:td (f/seconds-to-time-string (:duration (first (:tags music-video))))]])
+                 music-videos)]])
 
 (defn show [tag-slug]
   (api/get-tag-show tag-state tag-slug)
   (fn []
     [:div
-     [:div.tag-name (:name @tag-state)]]))
+     [:div.tag-name (:name @tag-state)]
+     [tags-show-table (:videos @tag-state)]]))
