@@ -4,7 +4,8 @@
    [reagent.core :as r :refer [atom]]
    [frontend.api :as api]
    [frontend.formatter :as f]
-   [clojure.string :as str])
+   [clojure.string :as str]
+   [frontend.music-video :as music-video])
   (:refer-clojure :exclude [list]))
 
 (defonce tag-state (atom nil))
@@ -54,8 +55,9 @@
                    ^{:key i}
                    [:tr
                     [:td (inc i)]
-                    [:td (:name music-video)]
-                    [:td (str/join ", " (sort (map (fn [child-tag] (:name child-tag)) (:tags (first (:tags music-video))))))]
+                    [:td [:a {:href (str "/music-videos/" {:youtube-id (:slug music-video)})}
+                          (str (:artist music-video) "  -  " (:name music-video))]]
+                    [:td (str/join ", " (map #(:name %) (:tags (first (:tags music-video)))))]
                     [:td (f/seconds-to-time-string (:duration (first (:tags music-video))))]])
                  music-videos)]])
 

@@ -16,6 +16,15 @@
     padding-bottom: 50px;
 }
 
+a:hover {
+    color: #d9534f;
+}
+
+a {
+    color: #8db2e5;
+    text-decoration: none;
+}
+
 @media only screen and (min-width: 400px) {
   .list-break-to-columns  {
     -webkit-column-count: 2;
