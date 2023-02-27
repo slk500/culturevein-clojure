@@ -16,6 +16,18 @@
                                      :width "640"
                                      :videoId youtube-id})))
 
+(defn- ul-list-tags-with-time [tags]
+  [:ul.list-unstyled
+   (for [{:keys [video_tag_id tag_name tag_slug_id video_tags_time]} tags]
+     ^{:key video_tag_id}
+     [:li [:a {:href (str "/tags/" tag_slug_id)} tag_name]
+      (when video_tags_time
+        [:ol
+         (for [{:keys [video_tag_time_id start stop]} video_tags_time]
+           ^{:key video_tag_time_id}
+           [:li [:a {:on-click #(.seekTo player start true)
+                     :href "#"} (str (f/seconds-to-time-string start) " -"  (f/seconds-to-time-string stop))]])])])])
+
 (defn show [youtube-id]
   (r/create-class
    {:component-did-mount
@@ -31,16 +43,7 @@
          [:div#player]
          [:p [:a {:href (str "/artists/" artist_slug)} artist_name]
           [:span " - " video_name]]
-         [:ul.list-unstyled
-          (for [{:keys [video_tag_id tag_name video_tags_time]} (:tags @music-video-state)]
-            ^{:key video_tag_id}
-            [:li tag_name
-             (when video_tags_time
-               [:ol
-                (for [{:keys [video_tag_time_id start stop]} video_tags_time]
-                  ^{:key video_tag_time_id}
-                  [:li [:a {:on-click #(.seekTo player start true)
-                            :href "#"} (str (f/seconds-to-time-string start) " -"  (f/seconds-to-time-string stop))]])])])]]))}))
+         (ul-list-tags-with-time (:tags @music-video-state))]))}))
 
 (defn list [artists]
   [:div

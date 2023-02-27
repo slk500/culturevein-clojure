@@ -4,8 +4,7 @@
    [reagent.core :as r :refer [atom]]
    [frontend.api :as api]
    [frontend.formatter :as f]
-   [clojure.string :as str]
-   [frontend.music-video :as music-video])
+   [clojure.string :as str])
   (:refer-clojure :exclude [list]))
 
 (defonce tag-state (atom nil))
@@ -42,6 +41,12 @@
     [:div {:dangerouslySetInnerHTML
            {:__html (tags-to-html-list tags-filtred search "list-unstyled list-break-to-columns")}}]))
 
+
+(defn- create-children-tags-links [tags]
+  [:span (interpose ", " (for [children-tag (sort-by :name tags)]
+                           ^{:key (:name children-tag)}
+                           [:a {:href (str "/tags/" (:slug children-tag))} (:name children-tag)]))])
+
 (defn- tags-show-table [music-videos]
   [:table
    [:thead
@@ -55,10 +60,10 @@
                    ^{:key i}
                    [:tr
                     [:td (inc i)]
-                    [:td [:a {:href (str "/music-videos/" {:youtube-id (:slug music-video)})}
+                    [:td [:a {:href (str "/music-videos/" (:slug music-video))}
                           (str (:artist music-video) "  -  " (:name music-video))]]
-                    [:td (str/join ", " (map #(:name %) (:tags (first (:tags music-video)))))]
-                    [:td (f/seconds-to-time-string (:duration (first (:tags music-video))))]])
+                    [:td (create-children-tags-links (:tags music-video))]
+                    [:td (f/seconds-to-time-string (:duration music-video))]])
                  music-videos)]])
 
 (defn show [tag-slug]
