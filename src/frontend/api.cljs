@@ -26,8 +26,14 @@
              :response-format :json
              :keywords? true}))
 
-(defn get-music-video [music-video-state youtube-id]
+(defn get-music-video-show [music-video-state youtube-id]
   (ajax/GET (str "http://localhost:8000/api/videos/" youtube-id)
-            {:handler #(swap! music-video-state assoc :video (first (:data %)))
-             :response-format :json
-             :keywords? true}))
+    {:handler #(swap! music-video-state assoc :video (first (:data %)))
+     :response-format :json
+     :keywords? true}))
+
+(defn get-artist-show [artist-state artist-slug]
+  (ajax/GET (str "http://localhost:8000/api/artists/" artist-slug)
+    {:handler #(reset! artist-state (:data %))
+     :response-format :json
+     :keywords? true}))

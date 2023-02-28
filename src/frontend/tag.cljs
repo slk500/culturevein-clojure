@@ -42,12 +42,12 @@
            {:__html (tags-to-html-list tags-filtred search "list-unstyled list-break-to-columns")}}]))
 
 
-(defn- create-children-tags-links [tags]
+(defn links [tags]
   [:span (interpose ", " (for [children-tag (sort-by :name tags)]
                            ^{:key (:name children-tag)}
                            [:a {:href (str "/tags/" (:slug children-tag))} (:name children-tag)]))])
 
-(defn- tags-show-table [music-videos]
+(defn- table [music-videos]
   [:table
    [:thead
     [:tr
@@ -62,13 +62,17 @@
                     [:td (inc i)]
                     [:td [:a {:href (str "/music-videos/" (:slug music-video))}
                           (str (:artist music-video) "  -  " (:name music-video))]]
-                    [:td (create-children-tags-links (:tags music-video))]
+                    [:td (links (:tags music-video))]
                     [:td (f/seconds-to-time-string (:duration music-video))]])
                  music-videos)]])
 
 (defn show [tag-slug]
-  (api/get-tag-show tag-state tag-slug)
-  (fn []
-    [:div
-     [:div.tag-name (:name @tag-state)]
-     [tags-show-table (:videos @tag-state)]]))
+  (r/create-class
+   {:component-did-mount
+    (fn []
+      (api/get-tag-show tag-state tag-slug))
+    :reagent-render
+    (fn []
+      [:div
+       [:div.tag-name (:name @tag-state)]
+       [table (:videos @tag-state)]])}))

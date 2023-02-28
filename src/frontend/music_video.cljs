@@ -34,7 +34,7 @@
     (fn []
       (swap! music-video-state assoc :youtube-id youtube-id)
       (api/get-music-video-tag-list music-video-state youtube-id)
-      (api/get-music-video music-video-state youtube-id)
+      (api/get-music-video-show music-video-state youtube-id)
       (create-youtube-player youtube-id))
     :reagent-render
     (fn []

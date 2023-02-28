@@ -9,7 +9,8 @@
    [frontend.tag :as tag]
    [frontend.music-video :as music-video]
    [frontend.api :as api]
-   [frontend.layout :as layout]))
+   [frontend.layout :as layout]
+   [frontend.artist :as artist]))
 
 (declare mount-element)
 
@@ -17,8 +18,14 @@
 (defonce app-state (atom {:tags []
                           :music-videos []}))
 
+(defroute "/artists/:artist-slug" [artist-slug]
+  (mount-element #(artist/show artist-slug) "app"))
+
 (defroute "/tags" {}
-  (mount-element #(tag/tag-list (:tags @app-state) value) "app"))
+  (mount-element #(tag/list (:tags @app-state) value) "app"))
+
+(defroute "/tags/:tag-slug" [tag-slug]
+  (mount-element #(tag/show tag-slug) "app"))
 
 (defroute "/music-videos" {}
   (mount-element #(music-video/list (:music-videos @app-state)) "app"))
@@ -39,7 +46,8 @@
 (defn app-components []
   (mount-element #(layout/navbar value) "navbar")
   (mount-element #(music-video/list (:music-videos @app-state)) "app")
-  (mount-element #(tag/tag-list (:tags @app-state) value) "app"))
+  (mount-element #(artist/show "50-cent") "app")
+  (mount-element #(tag/list (:tags @app-state) value) "app"))
 
 (app-components)
 
