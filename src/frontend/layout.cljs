@@ -1,13 +1,18 @@
 (ns frontend.layout)
 
 (defn navbar [value]
-  [:div.navbar
-   [:h1 [:a {:href "/"} "CultureVein"]]
-   [:ul {:class "list-unstyled"}
-    [:li [:a {:href "/tags"} "tags"]]
-    [:li [:a {:href "/music-videos"} "music videos"]]
-    [:li [:a {:href "#"} "add music video"]]]
-   [:div
+  [:navbar
+   [:header
+    [:h1 [:a.logo {:href "/"} "CultureVein"]]
+    [:nav
+     [:ul.list-unstyled.nav-links
+      [:li [:a {:href "/tags"} "tags"]]
+      [:li [:a {:href "/music-videos"} "music videos"]]
+      [:li [:a {:href "#"} "add music video"]]]]
+    [:ul.list-unstyled.nav-links
+     [:li [:a {:href "/about"} "about"]]
+     [:li [:a {:href "/login"} "login"]]]]
+   [:div.search-bar
     [:input {:type "text"
-             :value @value
-             :on-change #(reset! value (-> % .-target .-value))}]]])
+                       :value @value
+                       :on-change #(reset! value (-> % .-target .-value))}]]])
