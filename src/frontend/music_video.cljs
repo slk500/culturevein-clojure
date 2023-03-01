@@ -48,9 +48,10 @@
 (defn list [artists]
   [:div
    [:ul.list-unstyled.list-break-to-columns
-    (for [{:keys [name videos]} artists]
-      ^{:key name} [:li name
-                    [:ul
-                     (for [{:keys [youtube_id name]} videos]
-                       ^{:key youtube_id}
-                       [:li [:a {:href (str "/music-videos/" youtube_id)} name]])]])]])
+    (for [{:keys [slug name videos]} artists]
+      ^{:key name}
+      [:li [:a {:href (str "/artists/" slug )} name]
+       [:ul
+        (for [{:keys [youtube_id name]} videos]
+          ^{:key youtube_id}
+          [:li [:a {:href (str "/music-videos/" youtube_id)} name]])]])]])

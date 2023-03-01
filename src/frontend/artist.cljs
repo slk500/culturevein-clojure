@@ -25,7 +25,7 @@
 
 (defn- page [{:keys [name videos tags]}]
   [:div
-   [:h1 name]
+   [:h1.title name]
    [:span (str (count tags) " tags:")]
    [:p (tag/links tags)]
    [show-table videos]])

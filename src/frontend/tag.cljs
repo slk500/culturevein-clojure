@@ -43,7 +43,7 @@
 
 
 (defn links [tags]
-  [:span (interpose ", " (for [children-tag (sort-by :name tags)]
+  [:span (interpose ", " (for [children-tag (sort-by (comp clojure.string/lower-case :name) tags)]
                            ^{:key (:name children-tag)}
                            [:a {:href (str "/tags/" (:slug children-tag))} (:name children-tag)]))])
 
@@ -74,5 +74,5 @@
     :reagent-render
     (fn []
       [:div
-       [:div.tag-name (:name @tag-state)]
+       [:h1.title (:name @tag-state)]
        [table (:videos @tag-state)]])}))

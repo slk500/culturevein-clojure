@@ -64,6 +64,17 @@ input[type=text] {
     height: 20px;
 }
 
+table, th, td {
+  border: 0.2px dotted;
+}
+
+table {
+  width: 100%;
+}
+
+h1.title {
+    text-align: center;
+}
 
 @media only screen and (min-width: 400px) {
     .list-break-to-columns  {
