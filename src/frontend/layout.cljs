@@ -14,5 +14,6 @@
      [:li [:a {:href "/login"} "login"]]]]
    [:div.search-bar
     [:input {:type "text"
-                       :value @value
-                       :on-change #(reset! value (-> % .-target .-value))}]]])
+             :value @value
+             :on-change #(reset! value (-> % .-target .-value))
+             :placeholder "search"}]]])
