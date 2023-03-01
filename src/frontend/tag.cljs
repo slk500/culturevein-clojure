@@ -74,5 +74,8 @@
     :reagent-render
     (fn []
       [:div
+       [:p.title [:a {:href (str "/tags/" (:slug (first (:parent @tag-state))))} (:name (first (:parent @tag-state)))]]
        [:h1.title (:name @tag-state)]
-       [table (:videos @tag-state)]])}))
+       [:p.title (links (:children @tag-state))]
+       [table (:videos @tag-state)]])}
+   ))

@@ -1,7 +1,10 @@
 body {
-    margin-bottom: 60px;
     background-color: #292929;
     color: white;
+    margin: 0 auto;
+    max-width: 70em;
+    font-family: "Helvetica", "Arial", sans-serif;
+
 }
 
 .highlight {
@@ -64,15 +67,16 @@ input[type=text] {
     height: 20px;
 }
 
-table, th, td {
-  border: 0.2px dotted;
+th, td {
+  border: thin dotted #999;
+  padding: 0.3em 0.4em;
 }
 
 table {
   width: 100%;
 }
 
-h1.title {
+.title {
     text-align: center;
 }
 

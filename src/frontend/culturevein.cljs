@@ -46,7 +46,7 @@
 (defn app-components []
   (mount-element #(layout/navbar value) "navbar")
   (mount-element #(music-video/list (:music-videos @app-state)) "app")
-  (mount-element #(artist/show "50-cent") "app")
+  (mount-element #(tag/show "actor") "app")
   (mount-element #(tag/list (:tags @app-state) value) "app"))
 
 (app-components)
