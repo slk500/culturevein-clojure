@@ -32,6 +32,12 @@ header {
     padding: 10px 2%; 
 }
 
+.tag-title {
+    display: inline;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .search-bar {
     display: flex;
     justify-content: center;

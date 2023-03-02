@@ -43,9 +43,9 @@
 
 
 (defn links [tags]
-  [:span (interpose ", " (for [children-tag (sort-by (comp clojure.string/lower-case :name) tags)]
-                           ^{:key (:name children-tag)}
-                           [:a {:href (str "/tags/" (:slug children-tag))} (:name children-tag)]))])
+  [:span (interpose ", " (for [tag (sort-by (comp clojure.string/lower-case :name) tags)]
+                           ^{:key (:name tag)}
+                           [:a {:href (str "/tags/" (:slug tag))} (:name tag)]))])
 
 (defn- table [music-videos]
   [:table
@@ -66,6 +66,11 @@
                     [:td (f/seconds-to-time-string (:duration music-video))]])
                  music-videos)]])
 
+(defn- tag-next [next-and-prev]
+  (filter #(= (:direction %) "next") next-and-prev))
+(defn- tag-prev [next-and-prev]
+  (filter #(= (:direction %) "prev") next-and-prev))
+
 (defn show [tag-slug]
   (r/create-class
    {:component-did-mount
@@ -75,7 +80,9 @@
     (fn []
       [:div
        [:p.title [:a {:href (str "/tags/" (:slug (first (:parent @tag-state))))} (:name (first (:parent @tag-state)))]]
-       [:h1.title (:name @tag-state)]
+       [:div.title
+        [:span.tag-title (links (tag-prev (:next_and_prev @tag-state)))]
+        [:h1.tag-title (:name @tag-state)]
+        [:span.tag-title (links (tag-next (:next_and_prev @tag-state)))]]
        [:p.title (links (:children @tag-state))]
-       [table (:videos @tag-state)]])}
-   ))
+       [table (:videos @tag-state)]])}))
