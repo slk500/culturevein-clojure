@@ -39,6 +39,10 @@ header {
     margin-left: 10px;
 }
 
+.player-with-tags {
+    display: flex;
+}
+
 .search-bar {
     display: flex;
     justify-content: center;
@@ -52,6 +56,10 @@ header {
 
 a:hover {
     color: #d9534f !important;
+}
+
+.tags-text {
+    padding-left: 40px;
 }
 
 a {

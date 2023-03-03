@@ -47,11 +47,14 @@
     :reagent-render
     (fn []
       (let [{:keys [video_name artist_slug artist_name duration]} (:video @music-video-state)]
-        [:div
-         [:div#player]
-         [:p [:a {:href (str "/artists/" artist_slug)} artist_name]
-          [:span " - " video_name]]
-         (ul-list-tags-with-time (:tags @music-video-state) duration)]))}))
+        [:div.player-with-tags
+         [:div.player
+          [:div#player]
+          [:p [:a {:href (str "/artists/" artist_slug)} artist_name]
+           [:span " - " video_name]]]
+         [:div.tags
+          [:p.tags-text "tags:"]
+          (ul-list-tags-with-time (:tags @music-video-state) duration)]]))}))
 
 (defn list [artists]
   [:div
