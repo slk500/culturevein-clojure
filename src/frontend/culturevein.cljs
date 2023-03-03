@@ -1,17 +1,18 @@
 (ns ^:figwheel-hooks frontend.culturevein
   (:require
+   [accountant.core :as accountant]
+   [frontend.about :as about]
+   [frontend.api :as api]
+   [frontend.artist :as artist]
+   [frontend.layout :as layout]
+   [frontend.music-video :as music-video]
+   [frontend.music-video-add :as music-video-add]
+   [frontend.tag :as tag]
    [goog.dom :as gdom]
+   [hiccups.runtime]
    [reagent.core :as r :refer [atom]]
    [reagent.dom :as rdom]
-   [hiccups.runtime]
-   [secretary.core :as secretary :refer-macros [defroute]]
-   [accountant.core :as accountant]
-   [frontend.tag :as tag]
-   [frontend.music-video :as music-video]
-   [frontend.api :as api]
-   [frontend.about :as about]
-   [frontend.layout :as layout]
-   [frontend.artist :as artist]))
+   [secretary.core :as secretary :refer-macros [defroute]]))
 
 (declare mount-element)
 
@@ -21,6 +22,9 @@
 
 (defroute "/about" {}
   (mount-element #(about/show) "app"))
+
+(defroute "/add" {}
+  (mount-element #(music-video-add/page) "app"))
 
 (defroute "/artists/:artist-slug" [artist-slug]
   (mount-element #(artist/show artist-slug) "app"))
@@ -50,8 +54,8 @@
 (defn app-components []
   (mount-element #(layout/navbar value) "navbar")
   (mount-element #(music-video/list (:music-videos @app-state)) "app")
-  (mount-element #(tag/show "actor") "app")
-  (mount-element #(tag/list (:tags @app-state) value) "app"))
+  (mount-element #(tag/list (:tags @app-state) value) "app")
+  (mount-element #(music-video-add/page) "app"))
 
 (app-components)
 
