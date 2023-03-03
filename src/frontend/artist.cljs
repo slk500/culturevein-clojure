@@ -19,7 +19,7 @@
                    ^{:key i}
                    [:tr
                     [:td (inc i)]
-                    [:td [:a {:href (str "/music-videos/" (:slug music-video))} (:name music-video)]]
+                    [:td [:a {:href (str "/music-videos/" (:youtube_id music-video))} (:name music-video)]]
                     [:td (tag/links (:tags music-video))]])
                  music-videos)]])
 

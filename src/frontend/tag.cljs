@@ -41,7 +41,6 @@
     [:div {:dangerouslySetInnerHTML
            {:__html (tags-to-html-list tags-filtred search "list-unstyled list-break-to-columns")}}]))
 
-
 (defn links [tags]
   [:span (interpose ", " (for [tag (sort-by (comp clojure.string/lower-case :name) tags)]
                            ^{:key (:name tag)}

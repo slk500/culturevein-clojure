@@ -8,7 +8,8 @@ body {
 }
 
 .highlight {
-    background-color:  #E9AB17;
+    background-color:  green;
+    color:  white;
 }
 
 .list-unstyled {
@@ -60,6 +61,14 @@ a {
 
 .logo {
     color: #d9534f;
+}
+
+.red {
+    color: #d9534f;
+}
+
+.orange {
+    color: orange;    
 }
 
 input[type=text] {

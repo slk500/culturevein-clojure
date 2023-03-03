@@ -9,6 +9,7 @@
    [frontend.tag :as tag]
    [frontend.music-video :as music-video]
    [frontend.api :as api]
+   [frontend.about :as about]
    [frontend.layout :as layout]
    [frontend.artist :as artist]))
 
@@ -18,20 +19,23 @@
 (defonce app-state (atom {:tags []
                           :music-videos []}))
 
+(defroute "/about" {}
+  (mount-element #(about/show) "app"))
+
 (defroute "/artists/:artist-slug" [artist-slug]
   (mount-element #(artist/show artist-slug) "app"))
-
-(defroute "/tags" {}
-  (mount-element #(tag/list (:tags @app-state) value) "app"))
-
-(defroute "/tags/:tag-slug" [tag-slug]
-  (mount-element #(tag/show tag-slug) "app"))
 
 (defroute "/music-videos" {}
   (mount-element #(music-video/list (:music-videos @app-state)) "app"))
 
 (defroute "/music-videos/:youtube-id" [youtube-id]
   (mount-element #(music-video/show youtube-id) "app"))
+
+(defroute "/tags" {}
+  (mount-element #(tag/list (:tags @app-state) value) "app"))
+
+(defroute "/tags/:tag-slug" [tag-slug]
+  (mount-element #(tag/show tag-slug) "app"))
 
 (accountant/configure-navigation!
  {:nav-handler   (fn [path] (secretary/dispatch! path))
