@@ -17,11 +17,11 @@
     (set! player (js/YT.Player. "player" #js {:height "390"
                                               :width "640"
                                               :videoId youtube-id
-                                              :events #js {:onReady (fn [] (.log js/console "ready"))
-                                                           :onStateChange (fn [] (.log js/console "state change"))}}))
-    (let [[artist title] (map str/trim (str/split (.. (.getVideoData player) -title) #"-"))]
-      (swap! music-video-data assoc :artist artist)
-      (swap! music-video-data assoc :title title))))
+                                              :events #js {:onReady (fn []
+                                                                      (let [[artist title] (map str/trim (str/split (.. (.getVideoData player) -title) #"-"))]
+                                                                        (swap! music-video-data assoc :artist artist)
+                                                                        (swap! music-video-data assoc :title title)))
+                                                           :onStateChange (fn [] (.log js/console "state change"))}}))))
 
 (defn youtube-id [pasted-link]
   (if-some [[_ youtube-id]
