@@ -2,6 +2,7 @@
   (:require
    [goog.dom :as gdom]
    [goog.events :as gevents]
+   [frontend.api :as api]
    [frontend.form :as form]
    [clojure.string :as str]
    [reagent.core :as r :refer [atom]]))
@@ -20,8 +21,6 @@
     (set! (.-id button) "add-music-video")
     (gdom/setTextContent button "add music video")
     (gdom/appendChild (gdom/getElement "wrapper") button)
-    (gevents/listen button "click"
-                    (fn [e] (.log js/console "siema")))
     (gdom/appendChild (gdom/getElement "wrapper") player-div)
     (set! player (js/YT.Player. "player" #js {:height "390"
                                               :width "640"
@@ -29,8 +28,11 @@
                                               :events #js {:onReady (fn []
                                                                       (let [[artist title] (map str/trim (str/split (.. (.getVideoData player) -title) #"-"))]
                                                                         (swap! music-video-data assoc :artist-name artist)
+                                                                        (swap! music-video-data assoc :youtube-id youtube-id)
                                                                         (swap! music-video-data assoc :title title))
-                                                                      (swap! music-video-data assoc :duration (. player getDuration)))
+                                                                      (swap! music-video-data assoc :duration (. player getDuration))
+                                                                      (gevents/listen button "click"
+                                                                                      (fn [] (api/add-music-video @music-video-data))))
                                                            :onStateChange (fn [] (.log js/console "state change"))}}))))
 
 (defn youtube-id [pasted-link]
