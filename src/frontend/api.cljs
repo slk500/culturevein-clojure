@@ -41,5 +41,5 @@
 (defn add-music-video [{:keys [youtube-id artist-name title duration]}]
   (ajax/POST (str "http://localhost:8000/api/videos/" youtube-id)
     {:params [{:keys artist-name title duration}] ;; todo send proper keys
-     :on-success #(.log js/console "udało się")}))
+     :on-success #(.log js/console "ok")}))
 

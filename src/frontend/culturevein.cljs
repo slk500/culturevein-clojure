@@ -55,8 +55,7 @@
   (mount-element #(layout/navbar value) "navbar")
   (mount-element #(music-video/list (:music-videos @app-state)) "app")
   (mount-element #(tag/list (:tags @app-state) value) "app")
-;  (mount-element #(music-video-add/page) "app")
-  )
+  (mount-element #(music-video-add/page) "app"))
 
 (app-components)
 
