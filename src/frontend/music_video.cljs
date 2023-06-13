@@ -20,8 +20,8 @@
   (let [{:keys [start stop]} (first video-tags-time)]
     (cond
       (or (= (seq video-tags-time) nil)
-          (and (= start 0) (= stop duration))) "red"
-      (= 0 is_complete) "orange")))
+          (and (zero? start) (= stop duration))) "red"
+      (zero? is_complete) "orange")))
 
 (defn- ul-list-tags-with-time [tags duration]
   [:ul.list-unstyled

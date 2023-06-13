@@ -26,14 +26,12 @@
 (defn tags-to-html-list [tags search first-ul-css-class]
   (html
    [:ul {:class first-ul-css-class}
-    (for [tag tags]
+    (for [{:keys [tag_name children tag_slug_id]} tags]
       [:li
-       (let [tag-name (:tag_name tag)
-             children-tag (:children tag)]
-         [:a {:href (str "/tags/" (:tag_slug_id tag))}
-          (str (highlight tag-name @search)
-               (when (seq children-tag)
-                 (tags-to-html-list children-tag search "")))])])]))
+       [:a {:href (str "/tags/" tag_slug_id)}
+        (str (highlight tag_name @search)
+             (when (seq children)
+               (tags-to-html-list children search "")))]])]))
 
 (defn list [tags search]
   (let [tags-filtred (for [tag tags
