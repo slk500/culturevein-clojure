@@ -1,5 +1,6 @@
 (ns frontend.api
   (:require
+   [secretary.core :as secretary]
    [ajax.core :as ajax]))
 
 (defn get-tag-list [app-state]
@@ -39,7 +40,10 @@
      :keywords? true}))
 
 (defn add-music-video [{:keys [youtube-id artist-name title duration]}]
-  (ajax/POST (str "http://localhost:8000/api/videos/" youtube-id)
-    {:params [{:keys artist-name title duration}] ;; todo send proper keys
-     :on-success #(.log js/console "ok")}))
-
+  (ajax/POST (str "http://localhost:8000/api/videos")
+    {:params {:youtube_id youtube-id
+              :artist_name artist-name
+              :video_name title
+              :duration duration}
+     :format :json
+     :on-success (secretary/dispatch! (str "/music-videos/" youtube-id))}))

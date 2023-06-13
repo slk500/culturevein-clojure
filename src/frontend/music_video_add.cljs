@@ -46,11 +46,11 @@
       (swap! music-video-data assoc-in [:title] "")
       (swap! music-video-data assoc-in [:artist-name] ""))))
 
-
 (defn update-data [data key]
   (fn [e]
     (swap! data assoc key (.. e -target -value))))
 
+;; add require fields
 (defn page []
   [:div
    [:input {:type "text"
